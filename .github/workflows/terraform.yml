@@ -51,18 +51,18 @@ jobs:
         if: github.ref == 'refs/heads/main' && github.event_name == 'push'
         run: terraform apply -auto-approve -input=false -parallelism=10 tfplan
     
-      -name: configure aws credentials
+      - name: configure aws credentials
         uses: aws-actions/configure-aws-credentials@v2
         with:
           aws-access-key-id: ${{ secrets.ACCESS_KEY }}
           aws-secret-access-key: ${{ secrets.SECRET_ACCESS_KEY }}
           aws-region: ${{ env.AWS_REGION }}
           
-      -name: Get kubeconfig
+      - name: Get kubeconfig
         id: kubeconfig
         if: steps.apply.outcome == 'success'
         run: aws eks update-kubeconfig --region ${{ env.AWS_REGION }} --name ${{ env.EKS_CLUSTER }}
-      -name:    install ingress controller 
+      - name:    install ingress controller 
         id: ingress-controller
         if: steps.apply.outcome == 'success' && steps.kubeconfig.outcome == 'success'
         run: |
